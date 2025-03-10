@@ -11,7 +11,6 @@ import {
   GridComponent,
 } from "echarts/components";
 import { useEffect } from "react";
-// Register the required components
 
 interface TransactionChartProps {
   symbol: string;
@@ -61,6 +60,12 @@ const TransactionChart = ({ symbol }: TransactionChartProps) => {
           series: [
             {
               type: "candlestick",
+              itemStyle: {
+                color: "#43E06C",
+                color0: "#E12722",
+                borderColor: "#43E06C",
+                borderColor0: "#E12722",
+              },
               data:
                 data &&
                 data.map((candleData) => {

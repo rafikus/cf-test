@@ -5,7 +5,7 @@ export const binanceAPI = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "https://api.binance.com/api/v3" }),
   endpoints: (builder) => ({
     getKlinesForSymbol: builder.query<(string | number)[][], string>({
-      query: (symbol) => `/klines?symbol=${symbol}&interval=1w`,
+      query: (symbol) => `/klines?symbol=${symbol}&interval=1m&limit=20`,
     }),
   }),
 });

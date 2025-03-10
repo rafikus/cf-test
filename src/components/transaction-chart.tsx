@@ -10,6 +10,7 @@ import {
   LegendComponent,
   GridComponent,
 } from "echarts/components";
+import { useEffect } from "react";
 // Register the required components
 
 interface TransactionChartProps {
@@ -26,16 +27,16 @@ const TransactionChart = ({ symbol }: TransactionChartProps) => {
     CandlestickChart,
     CanvasRenderer,
   ]);
-  const { data, isError, isFetching, error } =
-    useGetKlinesForSymbolQuery(symbol);
+  const { data, refetch, isError, error } = useGetKlinesForSymbolQuery(symbol);
+
+  useEffect(() => {
+    const intervalId = setInterval(refetch, 1000);
+    return () => clearInterval(intervalId);
+  }, [refetch]);
 
   if (isError && error) {
     // @ts-expect-error error does exist...
     return <div>{error.error ?? ""} </div>;
-  }
-
-  if (isFetching) {
-    return <div>Loading...</div>;
   }
 
   return (
@@ -44,17 +45,24 @@ const TransactionChart = ({ symbol }: TransactionChartProps) => {
         echarts={echarts}
         option={{
           title: {
-            text: "Accumulated Waterfall Chart",
+            text: `Binance ${symbol}`,
           },
           xAxis: {
             type: "category",
             silent: true,
-            data: data?.map((_: unknown, idx: number) => idx),
+            data: data?.map((candleData) =>
+              new Date(candleData[0]).toUTCString()
+            ),
           },
-          yAxis: {},
+          yAxis: {
+            scale: true,
+          },
+          tooltip: {
+            trigger: "item",
+          },
+
           series: [
             {
-              name: "Placeholder",
               type: "candlestick",
               data:
                 data &&
@@ -66,9 +74,8 @@ const TransactionChart = ({ symbol }: TransactionChartProps) => {
             },
           ],
         }}
-        notMerge={true}
-        lazyUpdate={true}
         onChartReady={console.log}
+        showLoading={!data}
       />
     </div>
   );

@@ -1,7 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { binanceAPI } from "../api/binance";
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    [binanceAPI.reducerPath]: binanceAPI.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(binanceAPI.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

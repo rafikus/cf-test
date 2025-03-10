@@ -48,11 +48,9 @@ const TransactionChart = ({ symbol }: TransactionChartProps) => {
             text: `Binance ${symbol}`,
           },
           xAxis: {
+            show: false,
             type: "category",
-            silent: true,
-            data: data?.map((candleData) =>
-              new Date(candleData[0]).toUTCString()
-            ),
+            data: data?.map((candleData) => candleData[0]),
           },
           yAxis: {
             scale: true,
@@ -60,21 +58,20 @@ const TransactionChart = ({ symbol }: TransactionChartProps) => {
           tooltip: {
             trigger: "item",
           },
-
           series: [
             {
               type: "candlestick",
               data:
                 data &&
                 data.map((candleData) => {
-                  return candleData
+                  const values = candleData
                     .slice(1, 5)
                     .map((text) => parseFloat(text + ""));
+                  return [values[0], values[3], values[2], values[1]];
                 }),
             },
           ],
         }}
-        onChartReady={console.log}
         showLoading={!data}
       />
     </div>
